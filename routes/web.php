@@ -3,6 +3,11 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MainController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ArticleController;
+
+
+// Article
+Route::resource('/article', ArticleController::class);
 
 // Auth 
 Route::get('/auth/signin', [AuthController::class, 'signin']);

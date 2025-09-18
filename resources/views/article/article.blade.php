@@ -1,0 +1,23 @@
+@extends('layout')
+@section('content')
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">date public</th>
+      <th scope="col">title</th>
+      <th scope="col">text</th>
+      <th scope="col">author</th>
+    </tr>
+  </thead>
+  <tbody>
+    @foreach($articles as $article)
+    <tr>
+      <th scope="row">{{$article->date_public}}</th>
+      <td>{{$article->title}}</td>
+      <td>{{$article->text}}</td>
+      <td>{{\App\Models\User::findOrFAil($article->users_id)->name}}</td>
+    </tr>
+    @endforeach
+  </tbody>
+</table>
+@endsection
