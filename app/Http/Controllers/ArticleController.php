@@ -12,7 +12,7 @@ class ArticleController extends Controller
      */
     public function index()
     {
-        $articles = Article::all();
+        $articles = Article::latest()->paginate(5);
         return view('/article/article', ['articles'=>$articles]);
     }
 
@@ -21,7 +21,7 @@ class ArticleController extends Controller
      */
     public function create()
     {
-        //
+        return view('article.create');
     }
 
     /**
@@ -29,7 +29,18 @@ class ArticleController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'date' => 'required|date',
+            'title' => 'required|min:10',
+            'text' => 'max:100'
+        ]);
+        $article = new Article;
+        $article->date_public = $request->date;
+        $article->title = request('title');
+        $article->text = $request->text;
+        $article->users_id = 1;
+        $article->save();
+        return redirect()->route('article.index');
     }
 
     /**
