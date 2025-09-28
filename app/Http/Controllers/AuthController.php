@@ -48,4 +48,11 @@ class AuthController extends Controller
             'email' => 'Предоставленные учетные данные не соответствуют нашим записям.', 
         ])->onlyinput('email');
     }
+
+    public function logout(Request $request){
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return redirect()->route('login');
+    }
 }
