@@ -12,7 +12,7 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->text('text');
-            $table->foreignId('users_id');
+            $table->foreignId('user_id');
             $table->date('date_public');
             $table->timestamps();
         });

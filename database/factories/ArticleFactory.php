@@ -14,7 +14,7 @@ class ArticleFactory extends Factory
         return [
             'title' => fake()->sentence(6),
             'text' => fake()->text(500),
-            'users_id' => User::factory(),
+            'user_id' => User::factory(),
             'date_public' => fake()->date() 
         ];
     }

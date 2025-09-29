@@ -22,7 +22,7 @@
       <th scope="row">{{$article->date_public}}</th>
       <td><a href="/article/{{$article->id}}">{{$article->title}}</a></td>
       <td>{{$article->text}}</td>
-      <td>{{\App\Models\User::findOrFAil($article->users_id)->name}}</td>
+      <td>{{\App\Models\User::findOrFAil($article->user_id)->name}}</td>
     </tr>
     @endforeach
   </tbody>
