@@ -3,24 +3,19 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use App\Models\User;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Article>
- */
 class ArticleFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
+    protected $model = \App\Models\Article::class;
+
     public function definition(): array
     {
         return [
-            'title' => fake()->sentence(),
-            'text' => fake()->text(),
-            'users_id' =>rand(1, 11),
-            'date_public' => fake()->date()
+            'title' => fake()->sentence(6),
+            'text' => fake()->text(500),
+            'users_id' => User::factory(),
+            'date_public' => fake()->date() 
         ];
     }
 }
