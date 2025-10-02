@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Comment;
 use App\Models\Article;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class CommentController extends Controller
 {
@@ -29,10 +30,7 @@ class CommentController extends Controller
     }
 
     public function edit(Comment $comment){
-        if ($comment -> user_id !== Auth::id()){
-            abort(403, 'Вы не можете добавить комментарий(');
-        };
-
+        Gate::authorize('comment', $comment);
         return view('comments.edit', compact('comment'));
     }
 
