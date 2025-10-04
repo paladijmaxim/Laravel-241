@@ -35,29 +35,17 @@ class CommentController extends Controller
     }
 
     public function update(Request $request, Comment $comment){
-        if ($comment -> user_id !== Auth::id()){
-            abort(403, 'Вы не можете редактировать комментарий(');
-        };
-
-        $request -> validate([
-            'text' => 'required|min:1|max:500'
+        Gate::authorize('comment', $comment);
+        $comment->update([
+            'text' => $request->text
         ]);
-
-        $comment -> update([
-            'text' => $request -> text
-        ]);
-
         return redirect()->route('article.show', $comment->article_id)
             ->with('success', 'Комментарий обновлен!');
     }
 
     public function destroy(Comment $comment){
-        if ($comment -> user_id !== Auth::id()){
-            abort(403, 'Вы не можете удалить комментарий(');
-        };
-
-        $comment -> delete();
-
+        Gate::authorize('comment', $comment);
+        $comment->delete();
         return back()->with('success', 'Комментарий удален');
         }
 }

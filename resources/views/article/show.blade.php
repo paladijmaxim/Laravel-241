@@ -12,6 +12,7 @@
     <h5 class="card-title text-center">{{$article->title}}</h5>
     <h6 class="card-subtitle mb-2 text-body-secondary">{{$article->date_public}}</h6>
     <p class="card-text">{{$article->text}}</p>
+    @can('create')
     <div class="btn-toolbar mt-3" role="toolbar">
     <a href="/article/{{$article->id}}/edit" class="btn btn-primary me-3">Edit article</a>
     <div>
@@ -20,6 +21,7 @@
             @CSRF
             <button type='submit' class = 'btn btn-warning me-3'>Delete article</button>
         </form>
+    @endcan
     </div>
     <a href="{{ route('comments.create', $article) }}" class="btn btn-success">Добавить комментарий</a>
   </div>
@@ -35,7 +37,7 @@
                             {{ $comment->created_at->format('d.m.Y H:i') }}
                         </h6>
                         @auth
-                            @if(Auth::id() === $comment->user_id)
+                            @can('comment', $comment)
                                 <div class="btn-group btn-group-sm">
                                     <a href="{{ route('comments.edit', $comment) }}" 
                                        class="btn btn-outline-primary">Редактировать</a>
@@ -47,7 +49,7 @@
                                         <button type="submit" class="btn btn-outline-danger">Удалить</button>
                                     </form>
                                 </div>
-                            @endif
+                            @endcan
                         @endauth
                     </div>
                     <p class="card-text mt-2">{{ $comment->text }}</p>
