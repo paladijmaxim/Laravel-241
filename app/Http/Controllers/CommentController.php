@@ -7,6 +7,8 @@ use App\Models\Comment;
 use App\Models\Article;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\Commentmail;
 
 class CommentController extends Controller
 {
@@ -15,19 +17,21 @@ class CommentController extends Controller
         return view('comments.create', compact('article'));
     }
 
-    public function store(Request $request, Article $article){
-        $request -> validate([
-            'text' => 'required|min:1|max:500'
-        ]);
-
-        Comment::create([
-            'text' => $request -> text,
-            'article_id' => $article -> id,
-            'user_id' => Auth::id(),
-        ]);
-
-        return redirect()->route('article.show', $article)->with('success', 'Комментарий добавлен.');
+    public function store(Request $request, Article $article)
+{
+    $request->validate([
+        'text' => 'required|min:1|max:500'
+    ]);
+    $comment = new Comment([
+        'text' => $request->text,
+        'article_id' => $article->id,
+        'user_id' => Auth::id(),
+    ]);
+    if ($comment->save()) {
+        Mail::to('paladijmaximmail@mail.ru')->send(new Commentmail($comment, $article->id));
     }
+    return redirect()->route('article.show', $article)->with('success', 'Комментарий добавлен.');
+}
 
     public function edit(Comment $comment){
         Gate::authorize('comment', $comment);

@@ -21,8 +21,8 @@
             @CSRF
             <button type='submit' class = 'btn btn-warning me-3'>Delete article</button>
         </form>
-    @endcan
     </div>
+    @endcan
     <a href="{{ route('comments.create', $article) }}" class="btn btn-success">Добавить комментарий</a>
   </div>
 </div>
