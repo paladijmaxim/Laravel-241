@@ -19,6 +19,7 @@ class CommentController extends Controller
 
     public function store(Request $request, Article $article)
 {
+    // $article = Article::FindOrFail($request->article_id);
     $request->validate([
         'text' => 'required|min:1|max:500'
     ]);
@@ -28,7 +29,7 @@ class CommentController extends Controller
         'user_id' => Auth::id(),
     ]);
     if ($comment->save()) {
-        Mail::to('paladijmaximmail@mail.ru')->send(new Commentmail($comment, $article->id));
+        Mail::to('paladijmaximmail@mail.ru')->send(new Commentmail($comment, $article));
     }
     return redirect()->route('article.show', $article)->with('success', 'Комментарий добавлен.');
 }
