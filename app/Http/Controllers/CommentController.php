@@ -12,6 +12,11 @@ use App\Mail\Commentmail;
 
 class CommentController extends Controller
 {
+    public function index(){
+        $comments = Comment::latest()->paginate(10);
+        return view('comments.index', ['comments'=>$comments]);
+    }
+
     public function create(Article $article)
     {
         return view('comments.create', compact('article'));
@@ -53,4 +58,16 @@ class CommentController extends Controller
         $comment->delete();
         return back()->with('success', 'Комментарий удален');
         }
+
+    public function accept(Comment $comment){
+        $comment->accept = true;
+        $comment->save();
+        return redirect()->route('comment.index');
+    }
+
+    public function reject(Comment $comment){
+        $comment->accept = false;
+        $comment->save();
+        return redirect()->route('comment.index');
+    }
 }

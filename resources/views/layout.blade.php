@@ -27,6 +27,9 @@
                     @can('article')
                     <li class="nav-item">
                     <a class="nav-link active" aria-current="page" href="/article/create">Create Article</a>
+                    <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="/comments">Comment moderation</a>
+                    </li>
                     @endcan()
                     </li>
                     <li class="nav-item">

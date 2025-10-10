@@ -27,8 +27,9 @@
   </div>
 </div>
 <h3>Комментарии</h3>
-@if($article->comments->count() > 0)
-        @foreach($article->comments as $comment)
+
+@if(isset($comments) && $comments->count() > 0)  <!-- Проверяем отфильтрованные комментарии -->
+        @foreach($comments as $comment)
             <div class="card mb-3">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-start">

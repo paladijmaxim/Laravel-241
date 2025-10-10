@@ -12,6 +12,9 @@ Route::get('/comments/{comment}/edit', [CommentController::class, 'edit'])->name
 Route::put('/comments/{comment}', [CommentController::class, 'update'])->name('comments.update');
 Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
 Route::get('/articles/{article}/comments/create', [CommentController::class, 'create'])->name('comments.create');
+Route::get('/comments', [CommentController::class, 'index'])->name('comment.index');
+Route::get('/comments/{comment}/accept', [CommentController::class, 'accept'])->name('comment.accept');
+Route::get('/comments/{comment}/reject', [CommentController::class, 'reject'])->name('comment.reject');
 
 // Article
 Route::resource('/article', ArticleController::class)->middleware('auth:sanctum');

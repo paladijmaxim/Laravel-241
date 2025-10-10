@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Article;
+use App\Models\Comment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 
@@ -39,8 +40,10 @@ class ArticleController extends Controller
 
     public function show(Article $article)
     {
-        $article->load('comments.user');
-        return view('article.show', ['article'=>$article]);
+        $comments = Comment::where('article_id', $article->id)
+                            ->where('accept', true)
+                            ->get();
+        return view('article.show', ['article' => $article, 'comments' => $comments]);
     }
 
     public function edit(Article $article)
