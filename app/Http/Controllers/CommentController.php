@@ -7,9 +7,7 @@ use App\Models\Comment;
 use App\Models\Article;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Mail;
-use App\Mail\Commentmail;
-
+use App\Jobs\VeryLongJob;
 class CommentController extends Controller
 {
     public function index(){
@@ -33,9 +31,8 @@ class CommentController extends Controller
         'article_id' => $article->id,
         'user_id' => Auth::id(),
     ]);
-    if ($comment->save()) {
-        Mail::to('paladijmaximmail@mail.ru')->send(new Commentmail($comment, $article));
-    }
+    if ($comment->save()) 
+        VeryLongJob::dispatch($article, $comment, auth()->user()->name);
     return redirect()->route('article.show', $article)->with('success', 'Комментарий добавлен.');
 }
 

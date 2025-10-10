@@ -22,7 +22,7 @@ class Commentmail extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct(Comment $comment, Article $article)
+    public function __construct(Comment $comment, Article $article, public $author)
     {
         $this->comment = $comment;
         $this->article = $article;
@@ -49,7 +49,7 @@ class Commentmail extends Mailable
             with: [
                 'comment' => $this->comment,
                 'article_title'=>$this->article->title,
-                'author' => $this->comment->user->name, // используем связь с пользователем
+                'author'=>$this->author,
             ]
         );
     }
