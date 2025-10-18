@@ -20,10 +20,19 @@ return new class extends Migration
     }
 
     public function down(): void
-    {
-        Schema::table('articles', function (Blueprint $table) {
-            $table->dropForeign(['user_id']);
-            $table->dropColumn(['user_id', 'date_public']);
-        });
-    }
+{
+    Schema::table('articles', function (Blueprint $table) {
+        // Всегда проверяем существование колонок перед удалением
+        if (Schema::hasColumn('articles', 'user_id')) {
+            if (DB::getDriverName() !== 'sqlite') {
+                $table->dropForeign(['user_id']);
+            }
+            $table->dropColumn('user_id');
+        }
+        
+        if (Schema::hasColumn('articles', 'date_public')) {
+            $table->dropColumn('date_public');
+        }
+    });
+}
 };

@@ -6,6 +6,7 @@ use App\Models\Article;
 use App\Models\Comment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use App\Events\NewArticleEvent;
 
 class ArticleController extends Controller
 {
@@ -34,12 +35,15 @@ class ArticleController extends Controller
         $article->title = request('title');
         $article->text = $request->text;
         $article->user_id = auth()->id();
-        $article->save();
+        if ($article->save()){
+            NewArticleEvent::dispatch($article);
+        }
         return redirect()->route('article.index')->with('message','Create successful');
     }
 
     public function show(Article $article)
     {
+        if(isset($_GET['notify'])) auth()->user()->notifications->where('id', $_GET['notify'])->first()->markAsRead();
         $comments = Comment::where('article_id', $article->id)
                             ->where('accept', true)
                             ->get();
