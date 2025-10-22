@@ -11,11 +11,16 @@ use Illuminate\Support\Facades\Gate;
 use App\Jobs\VeryLongJob;
 use App\Notifications\NewCommentNotify;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 
 class CommentController extends Controller
 {
     public function index(){
-        $comments = Comment::latest()->paginate(10);
+        $page = (isset($_GET['page'])) ? $_GET["page"] : 0;
+        $comments = Cache::rememberForever('comments_'.$page, function(){
+        return Comment::latest()->paginate(10);
+        });
         return view('comments.index', ['comments'=>$comments]);
     }
 
@@ -35,8 +40,13 @@ class CommentController extends Controller
         'article_id' => $article->id,
         'user_id' => Auth::id(),
     ]);
-    if ($comment->save()) 
+    if($comment->save()){
         VeryLongJob::dispatch($article, $comment, auth()->user()->name);
+        $keys = DB::table('cache')->whereRaw('`key` GLOB :key', [':key'=>'comments_*[0-9]'])->get();
+            foreach($keys as $param){
+                Cache::forget($param->key);
+            }
+        }
     return redirect()->route('article.show', $article)->with('success', 'Комментарий добавлен.');
 }
 
@@ -47,6 +57,9 @@ class CommentController extends Controller
 
     public function update(Request $request, Comment $comment){
         Gate::authorize('comment', $comment);
+        if($comment->save()){
+            Cache::flush();
+        }
         $comment->update([
             'text' => $request->text
         ]);
@@ -56,6 +69,13 @@ class CommentController extends Controller
 
     public function destroy(Comment $comment){
         Gate::authorize('comment', $comment);
+        if($comment->save()){
+            Cache::forget('comments'.$comment->article_id);
+            $keys = DB::table('cache')->whereRaw('`key` GLOB :key', [':key'=>'comments_*[0-9]'])->get();
+            foreach($keys as $param){
+                Cache::forget($param->key);
+            }
+        }
         $comment->delete();
         return back()->with('success', 'Комментарий удален');
         }
@@ -66,6 +86,7 @@ class CommentController extends Controller
         $users = User::where('id', '!=', $comment->user_id)->get();
         if ($comment->save()) {
             Notification::send($users, new NewCommentNotify($article->title, $article->id));
+            Cache::forget('comments'.$article->id);
         };
         return redirect()->route('comment.index');
     }
