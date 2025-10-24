@@ -18,7 +18,7 @@ Route::get('/comments/{comment}/reject', [CommentController::class, 'reject'])->
 
 // Article
 Route::resource('/article', ArticleController::class)->middleware('auth:sanctum');
-Route::get('/article/{article}', [ArticleController::class, 'show'])->name('article.show');
+Route::get('/article/{article}', [ArticleController::class, 'show'])->name('article.show')->middleware('stat');
 
 // Auth 
 Route::get('/auth/signin', [AuthController::class, 'signin']);
